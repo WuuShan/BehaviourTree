@@ -75,20 +75,69 @@ namespace WuuShan.AIBehaviour
             OnSelectionChange();
         }
 
-        private void OnNodeSelectionChanged(NodeView node)
+        private void OnEnable()
         {
-            inspectorView.UpdateSelection(node);
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+        }
+
+        private void OnDisable()
+        {
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+        }
+
+        private void OnPlayModeStateChanged(PlayModeStateChange obj)
+        {
+            switch (obj)
+            {
+                case PlayModeStateChange.EnteredEditMode:
+                    OnSelectionChange();
+                    break;
+                case PlayModeStateChange.ExitingEditMode:
+                    break;
+                case PlayModeStateChange.EnteredPlayMode:
+                    OnSelectionChange();
+                    break;
+                case PlayModeStateChange.ExitingPlayMode:
+                    break;
+            }
         }
 
         private void OnSelectionChange()
         {
             BehaviourTree tree = Selection.activeObject as BehaviourTree;
 
-            // 检查 Unity 是否可以在编辑器中打开资产
-            if (tree && AssetDatabase.CanOpenAssetInEditor(tree.GetInstanceID()))
+            if (!tree)
             {
-                treeView.PopulateView(tree);
+                if (Selection.activeGameObject)
+                {
+                    BehaviourTreeRunner runner = Selection.activeGameObject.GetComponent<BehaviourTreeRunner>();
+                    if (runner)
+                    {
+                        tree = runner.tree;
+                    }
+                }
             }
+
+            if (Application.isPlaying)
+            {
+                if (tree)
+                {
+                    treeView.PopulateView(tree);
+                }
+            }
+            else
+            {
+                // 检查 Unity 是否可以在编辑器中打开资产
+                if (tree && AssetDatabase.CanOpenAssetInEditor(tree.GetInstanceID()))
+                {
+                    treeView.PopulateView(tree);
+                }
+            }
+        }
+        private void OnNodeSelectionChanged(NodeView node)
+        {
+            inspectorView.UpdateSelection(node);
         }
     }
 }

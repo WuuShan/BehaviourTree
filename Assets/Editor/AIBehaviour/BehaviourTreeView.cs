@@ -133,6 +133,17 @@ namespace WuuShan.AIBehaviour
                 }
             });
 
+            if (graphViewChange.movedElements != null)
+            {
+                nodes.ForEach((n) =>
+                {
+                    if (n is NodeView view)
+                    {
+                        view.SortChildren();
+                    }
+                });
+            }
+
             return graphViewChange;
         }
 

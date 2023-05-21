@@ -35,6 +35,8 @@ namespace WuuShan.AIBehaviour
             return treeState;
         }
 
+#if UNITY_EDITOR
+
         /// <summary>
         /// 创建节点
         /// </summary>
@@ -49,7 +51,11 @@ namespace WuuShan.AIBehaviour
             Undo.RecordObject(this, "Behaviour Tree (CreateNode)");
             nodes.Add(node);
 
-            AssetDatabase.AddObjectToAsset(node, this); // 将对象添加到由资产对象标识的现有资产
+            if (!Application.isPlaying)
+            {
+                AssetDatabase.AddObjectToAsset(node, this); // 将对象添加到由资产对象标识的现有资产
+            }
+
             Undo.RegisterCreatedObjectUndo(node, "Behaviour Tree (CreateNode)");   // 注册撤消操作以撤消对象的创建。
             AssetDatabase.SaveAssets(); // 将所有未保存的资产更改写入磁盘
 
@@ -152,11 +158,28 @@ namespace WuuShan.AIBehaviour
 
             return new();
         }
+#endif
+
+        public void Traverse(Node node, System.Action<Node> visiter)
+        {
+            if (node)
+            {
+                visiter.Invoke(node);
+                var children = GetChildren(node);
+                children.ForEach((n) => Traverse(n, visiter));
+            }
+        }
 
         public BehaviourTree Clone()
         {
             BehaviourTree tree = Instantiate(this);
             tree.rootNode = tree.rootNode.Clone();
+            tree.nodes = new();
+            Traverse(tree.rootNode, (n) =>
+            {
+                tree.nodes.Add(n);
+            });
+
             return tree;
         }
     }

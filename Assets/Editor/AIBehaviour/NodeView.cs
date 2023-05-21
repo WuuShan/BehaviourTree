@@ -1,6 +1,7 @@
 using System;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace WuuShan.AIBehaviour
 {
@@ -27,7 +28,7 @@ namespace WuuShan.AIBehaviour
         /// </summary>
         public Port output;
 
-        public NodeView(Node node)
+        public NodeView(Node node) : base("Assets/Editor/AIBehaviour/NodeView.uxml")
         {
             this.node = node;
             this.title = node.name;
@@ -38,6 +39,29 @@ namespace WuuShan.AIBehaviour
 
             CreateInputPorts();
             CreateOutputPorts();
+
+            SetupClasses();
+        }
+
+        private void SetupClasses()
+        {
+            // 将一个类添加到元素的类列表中，以便从 USS 分配样式。
+            if (node is ActionNode)
+            {
+                AddToClassList("action");
+            }
+            else if (node is CompositeNode)
+            {
+                AddToClassList("composite");
+            }
+            else if (node is DecoratorNode)
+            {
+                AddToClassList("decorator");
+            }
+            else if (node is RootNode)
+            {
+                AddToClassList("root");
+            }
         }
 
         /// <summary>
@@ -47,12 +71,13 @@ namespace WuuShan.AIBehaviour
         {
             if (node is ActionNode or CompositeNode or DecoratorNode)
             {
-                input = InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Single, typeof(bool));
+                input = InstantiatePort(Orientation.Vertical, Direction.Input, Port.Capacity.Single, typeof(bool));
             }
 
             if (input != null)
             {
                 input.portName = "";
+                input.style.flexDirection = FlexDirection.Column;
                 inputContainer.Add(input);
             }
         }
@@ -63,18 +88,19 @@ namespace WuuShan.AIBehaviour
         /// </summary>
         private void CreateOutputPorts()
         {
-            if (node is DecoratorNode or RootNode)
+            if (node is CompositeNode)
             {
-                output = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, typeof(bool));
+                output = InstantiatePort(Orientation.Vertical, Direction.Output, Port.Capacity.Multi, typeof(bool));
             }
-            else if (node is CompositeNode)
+            else if (node is DecoratorNode or RootNode)
             {
-                output = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, typeof(bool));
+                output = InstantiatePort(Orientation.Vertical, Direction.Output, Port.Capacity.Single, typeof(bool));
             }
 
             if (output != null)
             {
                 output.portName = "";
+                output.style.flexDirection = FlexDirection.ColumnReverse;
                 outputContainer.Add(output);
             }
         }

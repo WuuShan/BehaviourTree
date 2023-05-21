@@ -1,5 +1,6 @@
 using System;
 using UnityEditor;
+using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -28,11 +29,28 @@ namespace WuuShan.AIBehaviour
         /// </summary>
         private readonly string ussPath = "Assets/Editor/AIBehaviour/BehaviourTreeEditor.uss";
 
-        [MenuItem("BehaviourTreeEditor/Editor")]
+        [MenuItem("WuuShan/BehaviourTreeEditor")]
         public static void OpenWindow()
         {
             BehaviourTreeEditor wnd = GetWindow<BehaviourTreeEditor>();
             wnd.titleContent = new GUIContent(nameof(BehaviourTreeEditor));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="instanceId"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        [OnOpenAsset]
+        public static bool OnOpenAsset(int instanceId, int line)
+        {
+            if (Selection.activeObject is BehaviourTree)
+            {
+                OpenWindow();
+                return true;
+            }
+            return false;
         }
 
         public void CreateGUI()

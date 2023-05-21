@@ -15,7 +15,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 29079604b38749945aaa05e13b05473a
-  position: {x: 55.200012, y: -92}
+  position: {x: 55.200005, y: -73.60005}
   child: {fileID: -195644101937654297}
 --- !u!114 &-4875153454865940013
 MonoBehaviour:
@@ -125,8 +125,10 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 9d951bc909561a84283c2e1f4733f0da
-  position: {x: 262, y: 73.600006}
-  children: []
+  position: {x: 309.2, y: 73.600006}
+  children:
+  - {fileID: 7677646448802918028}
+  - {fileID: 8657481196038909784}
 --- !u!114 &7677646448802918028
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,7 +144,7 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 3fcbba486febc4240961b440d2e75154
-  position: {x: 0, y: 0}
+  position: {x: 233.6, y: 212.00005}
   duration: 1
 --- !u!114 &8657481196038909784
 MonoBehaviour:
@@ -159,5 +161,5 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: fb2d1f612da8948489401aaa9fe52e20
-  position: {x: 0, y: 0}
+  position: {x: 398.30005, y: 212.00003}
   message: 

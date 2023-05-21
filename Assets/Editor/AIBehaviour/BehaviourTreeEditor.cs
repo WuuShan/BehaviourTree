@@ -135,9 +135,15 @@ namespace WuuShan.AIBehaviour
                 }
             }
         }
+
         private void OnNodeSelectionChanged(NodeView node)
         {
             inspectorView.UpdateSelection(node);
+        }
+
+        private void OnInspectorUpdate()
+        {
+            treeView?.UpdateNodeStates();
         }
     }
 }

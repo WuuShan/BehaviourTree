@@ -36,14 +36,34 @@ namespace WuuShan.AIBehaviour
 
             var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(ussPath);
             styleSheets.Add(styleSheet);
+
+            Undo.undoRedoPerformed += OnUndoRedo;
         }
 
+        /// <summary>
+        /// 撤销重做
+        /// </summary>
+        private void OnUndoRedo()
+        {
+            PopulateView(tree);
+            AssetDatabase.SaveAssets();
+        }
+
+        /// <summary>
+        /// 根据节点GUID查找对应的节点视图并返回
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns>对应GUID的节点视图</returns>
         private NodeView FindNodeView(Node node)
         {
             // 获取具有给定 GUID 的第一个节点。如果没有找到则为空。
             return GetNodeByGuid(node.guid) as NodeView;
         }
 
+        /// <summary>
+        /// 填充行为树视图
+        /// </summary>
+        /// <param name="tree"></param>
         internal void PopulateView(BehaviourTree tree)
         {
             this.tree = tree;

@@ -45,9 +45,12 @@ namespace WuuShan.AIBehaviour
             Node node = CreateInstance(type) as Node;   // 创建一个实例化的脚本化对象节点
             node.name = type.Name;
             node.guid = GUID.Generate().ToString();
+
+            Undo.RecordObject(this, "Behaviour Tree (CreateNode)");
             nodes.Add(node);
 
             AssetDatabase.AddObjectToAsset(node, this); // 将对象添加到由资产对象标识的现有资产
+            Undo.RegisterCreatedObjectUndo(node, "Behaviour Tree (CreateNode)");   // 注册撤消操作以撤消对象的创建。
             AssetDatabase.SaveAssets(); // 将所有未保存的资产更改写入磁盘
 
             return node;
@@ -59,8 +62,11 @@ namespace WuuShan.AIBehaviour
         /// <param name="node">要删除的节点</param>
         public void DeleteNode(Node node)
         {
+            Undo.RecordObject(this, "Behaviour Tree (DeleteNode)");
             nodes.Remove(node);
-            AssetDatabase.RemoveObjectFromAsset(node);  // 从资产中移除对象 (也可以看看: AssetDatabase.AddObjectToAsset).
+            // AssetDatabase.RemoveObjectFromAsset(node);  // 从资产中移除对象 (也可以看看: AssetDatabase.AddObjectToAsset).
+            Undo.DestroyObjectImmediate(node);  // 销毁对象并记录撤消操作，以便可以重新创建它。
+
             AssetDatabase.SaveAssets(); // 将所有未保存的资产更改写入磁盘
         }
 
@@ -73,17 +79,23 @@ namespace WuuShan.AIBehaviour
         {
             if (parent is DecoratorNode decorator)
             {
+                Undo.RecordObject(decorator, "Behaviour Tree (AddChild)");
                 decorator.child = child;
+                EditorUtility.SetDirty(decorator);
             }
 
             if (parent is RootNode root)
             {
+                Undo.RecordObject(root, "Behaviour Tree (AddChild)");
                 root.child = child;
+                EditorUtility.SetDirty(root);
             }
 
             if (parent is CompositeNode composite)
             {
+                Undo.RecordObject(composite, "Behaviour Tree (AddChild)");
                 composite.children.Add(child);
+                EditorUtility.SetDirty(composite);
             }
         }
 
@@ -96,17 +108,23 @@ namespace WuuShan.AIBehaviour
         {
             if (parent is DecoratorNode decorator)
             {
+                Undo.RecordObject(decorator, "Behaviour Tree (RemoveChild)");
                 decorator.child = null;
+                EditorUtility.SetDirty(decorator);
             }
 
             if (parent is RootNode root)
             {
+                Undo.RecordObject(root, "Behaviour Tree (RemoveChild)");
                 root.child = null;
+                EditorUtility.SetDirty(root);
             }
 
             if (parent is CompositeNode composite)
             {
+                Undo.RecordObject(composite, "Behaviour Tree (RemoveChild)");
                 composite.children.Remove(child);
+                EditorUtility.SetDirty(composite);
             }
         }
 

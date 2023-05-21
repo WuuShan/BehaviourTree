@@ -1,6 +1,9 @@
 using System;
+using UnityEditor;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.VersionControl;
 using UnityEngine;
+using UnityEngine.Profiling;
 using UnityEngine.UIElements;
 
 namespace WuuShan.AIBehaviour
@@ -110,8 +113,14 @@ namespace WuuShan.AIBehaviour
         {
             base.SetPosition(newPos);
 
+            // 允许你在将要对其执行更改的特定对象上注册撤消操作。
+            // 记录在 RecordObject 函数之后对对象所做的任何更改。
+            Undo.RecordObject(node, "Behaviour Tree (Set Position)");
+
             node.position.x = newPos.xMin;
             node.position.y = newPos.yMin;
+
+            EditorUtility.SetDirty(node);
         }
 
         public override void OnSelected()

@@ -10,6 +10,7 @@ namespace WuuShan
         private void Start()
         {
             tree = tree.Clone();
+            tree.Bind();
         }
 
         private void Update()

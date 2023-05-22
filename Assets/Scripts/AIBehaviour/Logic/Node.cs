@@ -42,6 +42,8 @@ namespace WuuShan.AIBehaviour
         /// 编辑器的位置
         /// </summary>
         [HideInInspector] public Vector2 position;
+        [HideInInspector] public Blackboard blackboard;
+        [TextArea] public string description;
 
         public State Update()
         {

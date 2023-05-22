@@ -19,6 +19,16 @@ namespace WuuShan.AIBehaviour
         /// 检查器视图
         /// </summary>
         private InspectorView inspectorView;
+        /// <summary>
+        /// 黑板视图
+        /// </summary>
+        private IMGUIContainer blackboardView;
+
+        private SerializedObject treeObject;
+        /// <summary>
+        /// 黑板属性
+        /// </summary>
+        private SerializedProperty blackboardProperty;
 
         /// <summary>
         /// 可扩展标记语言文件路径
@@ -69,6 +79,13 @@ namespace WuuShan.AIBehaviour
 
             treeView = root.Q<BehaviourTreeView>();
             inspectorView = root.Q<InspectorView>();
+            blackboardView = root.Q<IMGUIContainer>();
+            blackboardView.onGUIHandler = () =>
+            {
+                treeObject.Update();
+                EditorGUILayout.PropertyField(blackboardProperty);
+                treeObject.ApplyModifiedProperties();
+            };
 
             treeView.OnNodeSelected = OnNodeSelectionChanged;
 
@@ -133,6 +150,12 @@ namespace WuuShan.AIBehaviour
                 {
                     treeView.PopulateView(tree);
                 }
+            }
+
+            if (tree != null)
+            {
+                treeObject = new SerializedObject(tree);
+                blackboardProperty = treeObject.FindProperty("blackboard");
             }
         }
 

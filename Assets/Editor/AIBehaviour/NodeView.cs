@@ -1,6 +1,7 @@
 using System;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.UIElements;
 using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.Profiling;
@@ -42,8 +43,11 @@ namespace WuuShan.AIBehaviour
 
             CreateInputPorts();
             CreateOutputPorts();
-
             SetupClasses();
+
+            Label descriptionLabel = this.Q<Label>("description");
+            descriptionLabel.bindingPath = "description";
+            descriptionLabel.Bind(new SerializedObject(node));
         }
 
         private void SetupClasses()

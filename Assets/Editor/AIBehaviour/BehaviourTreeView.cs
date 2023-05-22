@@ -133,6 +133,17 @@ namespace WuuShan.AIBehaviour
                 }
             });
 
+            if (graphViewChange.movedElements != null)
+            {
+                nodes.ForEach((n) =>
+                {
+                    if (n is NodeView view)
+                    {
+                        view.SortChildren();
+                    }
+                });
+            }
+
             return graphViewChange;
         }
 
@@ -168,6 +179,10 @@ namespace WuuShan.AIBehaviour
             }
         }
 
+        /// <summary>
+        /// 根据节点类型创建对应的节点
+        /// </summary>
+        /// <param name="type">节点类型</param>
         private void CreateNode(Type type)
         {
             Node node = tree.CreateNode(type);
@@ -186,6 +201,17 @@ namespace WuuShan.AIBehaviour
             };
 
             AddElement(nodeView);
+        }
+
+        public void UpdateNodeStates()
+        {
+            nodes.ForEach(n =>
+            {
+                if (n is NodeView view)
+                {
+                    view.UpdateState();
+                }
+            });
         }
     }
 }

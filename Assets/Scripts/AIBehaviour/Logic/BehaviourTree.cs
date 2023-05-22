@@ -24,6 +24,10 @@ namespace WuuShan.AIBehaviour
         /// 子节点列表
         /// </summary>
         public List<Node> nodes = new();
+        /// <summary>
+        /// 黑板
+        /// </summary>
+        public Blackboard blackboard = new();
 
         public Node.State Update()
         {
@@ -181,6 +185,14 @@ namespace WuuShan.AIBehaviour
             });
 
             return tree;
+        }
+
+        public void Bind()
+        {
+            Traverse(rootNode, node =>
+            {
+                node.blackboard = blackboard;
+            });
         }
     }
 }
